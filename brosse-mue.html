@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Brosse pour la mue | EquiPower</title>
+    <link rel="icon" type="image/png" href="assets/logos/favicon.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+    <script async src="https://js.stripe.com/v3/buy-button.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index_hidden.html">
+        <img class="brand__logo" src="assets/logos/equipower_logo_transparent.png" alt="EquiPower logo" />
+        <span>EquiPower</span>
+      </a>
+      <nav class="site-nav">
+        <a href="index_hidden.html#home">Accueil</a>
+        <a href="index_hidden.html#products">Produits</a>
+        <a href="index_hidden.html#about">À propos</a>
+      </nav>
+    </header>
+
+    <main class="product-page">
+      <section class="product-detail">
+        <div class="breadcrumb">
+          <a href="index_hidden.html#products">Produits</a>
+          <span>/</span>
+          <span>Brosse pour la mue</span>
+        </div>
+
+        <div class="product-layout">
+          <div class="product-gallery">
+            <button
+              class="product-gallery__main"
+              type="button"
+              data-gallery-open
+              aria-label="Ouvrir la galerie produit"
+            >
+              <img
+                id="product-main-image"
+                src="assets/images/brosse-mue-1.webp"
+                alt="Brosse pour la mue EquiPower"
+              />
+            </button>
+            <div class="product-gallery__thumbs">
+              <button class="product-gallery__thumb is-active" type="button" data-gallery-thumb data-image="assets/images/brosse-mue-1.webp" data-alt="Vue produit 1">
+                <img src="assets/images/brosse-mue-1.webp" alt="Vue produit 1" />
+              </button>
+              <button class="product-gallery__thumb" type="button" data-gallery-thumb data-image="assets/images/brosse-mue-2.webp" data-alt="Vue produit 2">
+                <img src="assets/images/brosse-mue-2.webp" alt="Vue produit 2" />
+              </button>
+              <button class="product-gallery__thumb" type="button" data-gallery-thumb data-image="assets/images/brosse-mue-3.webp" data-alt="Vue produit 3">
+                <img src="assets/images/brosse-mue-3.webp" alt="Vue produit 3" />
+              </button>
+              <button class="product-gallery__thumb" type="button" data-gallery-thumb data-image="assets/images/brosse-mue-4.webp" data-alt="Vue produit 4">
+                <img src="assets/images/brosse-mue-4.webp" alt="Vue produit 4" />
+              </button>
+              <button class="product-gallery__thumb" type="button" data-gallery-thumb data-image="assets/images/brosse-mue-5.webp" data-alt="Vue produit 5">
+                <img src="assets/images/brosse-mue-5.webp" alt="Vue produit 5" />
+              </button>
+            </div>
+          </div>
+
+          <div class="product-summary">
+            <div class="eyebrow">Entretien & soin</div>
+            <h1>Brosse pour la mue</h1>
+            <div class="price product-summary__price"><strong>18,95 €</strong><span>EUR</span></div>
+            <p class="product-summary__lead">
+              Une brosse super ultra-efficace conçue pour retirer rapidement le poil mort
+              pendant les périodes de mue abondante, sans compliquer la routine de pansage.
+            </p>
+
+            <ul class="product-summary__highlights">
+              <li>Idéale au printemps quand le cheval perd beaucoup de poils.</li>
+              <li>Prise en main simple et geste rapide pour un usage quotidien.</li>
+              <li>Un accessoire efficace, encore trop souvent méconnu.</li>
+            </ul>
+
+            <div class="product-summary__buy">
+              <stripe-buy-button
+                buy-button-id="buy_btn_1TMF0tHOLwtH1tZQHRU2lURr"
+                publishable-key="pk_test_51TBcIFHOLwtH1tZQQ7IRgIaHWuBlgk4nSpYsRLWeK4iLhaT64hGMonyZpj6q6adsVLtQF7AVaJ2pgpXggCEi52Nt003zNhgXMA"
+              >
+              </stripe-buy-button>
+            </div>
+
+            <div class="product-summary__meta">
+              <div><i class="fa-solid fa-truck-fast" aria-hidden="true"></i><span>Expédition sous 48h</span></div>
+              <div><i class="fa-brands fa-stripe" aria-hidden="true"></i><span>Checkout Stripe simple et rassurant</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="product-description" id="description">
+        <div class="section-heading section-heading--left">
+          <div class="eyebrow">Description</div>
+          <h2>Puissante, souple et pensée pour toutes les zones</h2>
+        </div>
+        <p class="product-description__body">
+          Dites adieu aux longues séances de pansage et aux nuages de poils. La Brosse
+          pour la mue a été spécialement conçue pour les propriétaires de chevaux confrontés
+          à une forte mue de printemps. Elle retire facilement les poils morts et le sous-poil
+          accumulé en quelques passages, sans tirer ni gêner le cheval. Ses dents souples et
+          flexibles s&apos;adaptent aux formes du corps pour un pansage à la fois efficace et
+          confortable, même sur les zones sensibles. Parfaite pour les robes épaisses, le poil
+          d&apos;hiver et les zones difficiles d&apos;accès, elle devient rapidement un indispensable de
+          la saison. Douce. Efficace. Essentielle.
+        </p>
+      </section>
+    </main>
+
+    <div class="lightbox" id="product-lightbox" hidden>
+      <button class="lightbox__backdrop" type="button" data-lightbox-close aria-label="Fermer la galerie"></button>
+      <div class="lightbox__dialog" role="dialog" aria-modal="true" aria-label="Galerie produit">
+        <button class="lightbox__close" type="button" data-lightbox-close aria-label="Fermer">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+        <button class="lightbox__nav lightbox__nav--prev" type="button" data-lightbox-prev aria-label="Image précédente">
+          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+        </button>
+        <img id="lightbox-image" src="assets/images/brosse-mue-1.webp" alt="Vue produit 1" />
+        <button class="lightbox__nav lightbox__nav--next" type="button" data-lightbox-next aria-label="Image suivante">
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <div>
+        <div class="brand brand--footer">EquiPower</div>
+        <p>Des produits utiles, choisis pour les vrais besoins du quotidien à l&apos;écurie.</p>
+        <p>&copy; Propulsé par In Your Fluff</p>
+      </div>
+      <div>
+        <h3>Navigation</h3>
+        <a href="index_hidden.html#home">Accueil</a>
+        <a href="index_hidden.html#products">Produits</a>
+        <a href="index_hidden.html#about">À propos</a>
+      </div>
+      <div>
+        <h3>Contact</h3>
+        <p>info@inyourfluff.com</p>
+      </div>
+    </footer>
+    <script>
+      const thumbs = Array.from(document.querySelectorAll("[data-gallery-thumb]"));
+      const mainImage = document.getElementById("product-main-image");
+      const lightbox = document.getElementById("product-lightbox");
+      const lightboxImage = document.getElementById("lightbox-image");
+      const openButton = document.querySelector("[data-gallery-open]");
+      const closeButtons = document.querySelectorAll("[data-lightbox-close]");
+      const prevButton = document.querySelector("[data-lightbox-prev]");
+      const nextButton = document.querySelector("[data-lightbox-next]");
+      let activeIndex = 0;
+
+      function renderGallery(index) {
+        activeIndex = index;
+        const thumb = thumbs[index];
+        const image = thumb.dataset.image;
+        const alt = thumb.dataset.alt;
+        mainImage.src = image;
+        mainImage.alt = alt;
+        lightboxImage.src = image;
+        lightboxImage.alt = alt;
+        thumbs.forEach((item, itemIndex) => {
+          item.classList.toggle("is-active", itemIndex === index);
+        });
+      }
+
+      function openLightbox() {
+        lightbox.hidden = false;
+        document.body.classList.add("lightbox-open");
+        lightboxImage.focus?.();
+      }
+
+      function closeLightbox() {
+        lightbox.hidden = true;
+        document.body.classList.remove("lightbox-open");
+      }
+
+      function stepGallery(direction) {
+        const nextIndex = (activeIndex + direction + thumbs.length) % thumbs.length;
+        renderGallery(nextIndex);
+      }
+
+      thumbs.forEach((thumb, index) => {
+        thumb.addEventListener("click", () => renderGallery(index));
+      });
+
+      openButton.addEventListener("click", openLightbox);
+      closeButtons.forEach((button) => button.addEventListener("click", closeLightbox));
+      prevButton.addEventListener("click", () => stepGallery(-1));
+      nextButton.addEventListener("click", () => stepGallery(1));
+      lightbox.addEventListener("click", (event) => {
+        if (event.target === lightbox) {
+          closeLightbox();
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (lightbox.hidden) {
+          return;
+        }
+        if (event.key === "Escape") {
+          closeLightbox();
+        }
+        if (event.key === "ArrowLeft") {
+          stepGallery(-1);
+        }
+        if (event.key === "ArrowRight") {
+          stepGallery(1);
+        }
+      });
+
+      renderGallery(0);
+    </script>
+  </body>
+</html>
