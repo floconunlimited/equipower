@@ -9,7 +9,6 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     />
-    <script async src="https://js.stripe.com/v3/buy-button.js"></script>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -82,11 +81,18 @@
             </ul>
 
             <div class="product-summary__buy">
-              <stripe-buy-button
-                buy-button-id="buy_btn_1TMF0tHOLwtH1tZQHRU2lURr"
-                publishable-key="pk_test_51TBcIFHOLwtH1tZQQ7IRgIaHWuBlgk4nSpYsRLWeK4iLhaT64hGMonyZpj6q6adsVLtQF7AVaJ2pgpXggCEi52Nt003zNhgXMA"
-              >
-              </stripe-buy-button>
+              <div class="variant-selector">
+                <div class="variant-selector__label">Couleur</div>
+                <div class="variant-options">
+                  <!-- Replace each data-price-id with your Stripe Price IDs (Stripe dashboard → Products) -->
+                  <button class="variant-option is-active" type="button" data-price-id="price_REPLACE_NATUREL" data-label="Naturel" style="--swatch: #c8b89a;" aria-label="Naturel"></button>
+                  <button class="variant-option" type="button" data-price-id="price_REPLACE_NOIR" data-label="Noir" style="--swatch: #1c1c1c;" aria-label="Noir"></button>
+                  <button class="variant-option" type="button" data-price-id="price_REPLACE_MARINE" data-label="Marine" style="--swatch: #2c4a7a;" aria-label="Marine"></button>
+                </div>
+                <div class="variant-selected-label" id="variant-selected-label">Naturel</div>
+              </div>
+              <button class="button button--large" id="checkout-btn" type="button">Acheter — 18,95 €</button>
+              <p class="checkout-error" id="checkout-error" hidden>Une erreur est survenue. Veuillez réessayer.</p>
             </div>
 
             <div class="product-summary__meta">
@@ -219,6 +225,44 @@
       });
 
       renderGallery(0);
+    </script>
+    <script>
+      const variantOptions = Array.from(document.querySelectorAll(".variant-option"));
+      const variantSelectedLabel = document.getElementById("variant-selected-label");
+      let selectedPriceId = variantOptions[0]?.dataset.priceId;
+
+      variantOptions.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          variantOptions.forEach((b) => b.classList.remove("is-active"));
+          btn.classList.add("is-active");
+          selectedPriceId = btn.dataset.priceId;
+          variantSelectedLabel.textContent = btn.dataset.label;
+        });
+      });
+
+      const checkoutBtn = document.getElementById("checkout-btn");
+      const checkoutError = document.getElementById("checkout-error");
+
+      checkoutBtn.addEventListener("click", async () => {
+        checkoutBtn.disabled = true;
+        checkoutBtn.textContent = "Redirection…";
+        checkoutError.hidden = true;
+
+        try {
+          const res = await fetch("/.netlify/functions/create-checkout", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ priceId: selectedPriceId, quantity: 1 }),
+          });
+          if (!res.ok) throw new Error();
+          const { url } = await res.json();
+          window.location.href = url;
+        } catch {
+          checkoutError.hidden = false;
+          checkoutBtn.disabled = false;
+          checkoutBtn.textContent = "Acheter — 18,95 €";
+        }
+      });
     </script>
   </body>
 </html>
