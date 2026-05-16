@@ -5,22 +5,22 @@ exports.handler = async (event) => {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
-  let priceId, quantity;
+  let items;
   try {
-    ({ priceId, quantity = 1 } = JSON.parse(event.body));
+    ({ items } = JSON.parse(event.body));
   } catch {
     return { statusCode: 400, body: JSON.stringify({ error: 'Invalid request body' }) };
   }
 
-  if (!priceId) {
-    return { statusCode: 400, body: JSON.stringify({ error: 'Missing priceId' }) };
+  if (!items || !items.length) {
+    return { statusCode: 400, body: JSON.stringify({ error: 'Missing items' }) };
   }
 
   try {
     const origin = event.headers.origin || 'https://equipower.fr';
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
-      line_items: [{ price: priceId, quantity }],
+      line_items: items.map(({ priceId, quantity }) => ({ price: priceId, quantity })),
       success_url: `${origin}/merci-commande.html`,
       cancel_url: `${origin}/brosse-mue.html`,
       shipping_address_collection: {

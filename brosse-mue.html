@@ -81,16 +81,40 @@
             </ul>
 
             <div class="product-summary__buy">
-              <div class="variant-selector">
-                <div class="variant-selector__label">Couleur</div>
-                <div class="variant-options">
-                  <button class="variant-option is-active" type="button" data-price-id="price_1TXq4RHOLwtH1tZQmV9Jj30P" data-label="Naturel" style="--swatch: #c8b89a;" aria-label="Naturel"></button>
-                  <button class="variant-option" type="button" data-price-id="price_1TXq5XHOLwtH1tZQI4YiJFAV" data-label="Noir" style="--swatch: #1c1c1c;" aria-label="Noir"></button>
-                  <button class="variant-option" type="button" data-price-id="price_1TXq5wHOLwtH1tZQ2A18JDGI" data-label="Marine" style="--swatch: #2c4a7a;" aria-label="Marine"></button>
+              <div class="basket-table">
+                <div class="basket-row" data-price-id="price_1TXq4RHOLwtH1tZQmV9Jj30P">
+                  <span class="basket-row__swatch" style="--swatch: #c8b89a;"></span>
+                  <span class="basket-row__label">Naturel</span>
+                  <div class="qty-control">
+                    <button class="qty-control__btn" type="button" data-qty-dec aria-label="Diminuer">−</button>
+                    <span class="qty-control__value">0</span>
+                    <button class="qty-control__btn" type="button" data-qty-inc aria-label="Augmenter">+</button>
+                  </div>
                 </div>
-                <div class="variant-selected-label" id="variant-selected-label">Naturel</div>
+                <div class="basket-row" data-price-id="price_1TXq5XHOLwtH1tZQI4YiJFAV">
+                  <span class="basket-row__swatch" style="--swatch: #1c1c1c;"></span>
+                  <span class="basket-row__label">Noir</span>
+                  <div class="qty-control">
+                    <button class="qty-control__btn" type="button" data-qty-dec aria-label="Diminuer">−</button>
+                    <span class="qty-control__value">0</span>
+                    <button class="qty-control__btn" type="button" data-qty-inc aria-label="Augmenter">+</button>
+                  </div>
+                </div>
+                <div class="basket-row" data-price-id="price_1TXq5wHOLwtH1tZQ2A18JDGI">
+                  <span class="basket-row__swatch" style="--swatch: #2c4a7a;"></span>
+                  <span class="basket-row__label">Marine</span>
+                  <div class="qty-control">
+                    <button class="qty-control__btn" type="button" data-qty-dec aria-label="Diminuer">−</button>
+                    <span class="qty-control__value">0</span>
+                    <button class="qty-control__btn" type="button" data-qty-inc aria-label="Augmenter">+</button>
+                  </div>
+                </div>
               </div>
-              <button class="button button--large" id="checkout-btn" type="button">Acheter — 18,95 €</button>
+              <div class="basket-summary">
+                <span id="basket-count">0 article</span>
+                <span class="basket-summary__total" id="basket-total">0,00 €</span>
+              </div>
+              <button class="button button--large" id="checkout-btn" type="button" disabled>Acheter</button>
               <p class="checkout-error" id="checkout-error" hidden>Une erreur est survenue. Veuillez réessayer.</p>
             </div>
 
@@ -226,23 +250,52 @@
       renderGallery(0);
     </script>
     <script>
-      const variantOptions = Array.from(document.querySelectorAll(".variant-option"));
-      const variantSelectedLabel = document.getElementById("variant-selected-label");
-      let selectedPriceId = variantOptions[0]?.dataset.priceId;
-
-      variantOptions.forEach((btn) => {
-        btn.addEventListener("click", () => {
-          variantOptions.forEach((b) => b.classList.remove("is-active"));
-          btn.classList.add("is-active");
-          selectedPriceId = btn.dataset.priceId;
-          variantSelectedLabel.textContent = btn.dataset.label;
-        });
-      });
-
+      const UNIT_PRICE = 18.95;
+      const rows = Array.from(document.querySelectorAll(".basket-row"));
+      const basketCount = document.getElementById("basket-count");
+      const basketTotal = document.getElementById("basket-total");
       const checkoutBtn = document.getElementById("checkout-btn");
       const checkoutError = document.getElementById("checkout-error");
 
+      const quantities = {};
+      rows.forEach((row) => { quantities[row.dataset.priceId] = 0; });
+
+      function formatEur(amount) {
+        return amount.toFixed(2).replace(".", ",") + " €";
+      }
+
+      function updateBasket() {
+        const total = Object.values(quantities).reduce((sum, q) => sum + q, 0);
+        basketCount.textContent = total === 1 ? "1 article" : `${total} articles`;
+        basketTotal.textContent = formatEur(total * UNIT_PRICE);
+        checkoutBtn.disabled = total === 0;
+        checkoutBtn.textContent = total > 0 ? `Acheter — ${formatEur(total * UNIT_PRICE)}` : "Acheter";
+      }
+
+      rows.forEach((row) => {
+        const priceId = row.dataset.priceId;
+        const valueEl = row.querySelector(".qty-control__value");
+
+        row.querySelector("[data-qty-dec]").addEventListener("click", () => {
+          if (quantities[priceId] > 0) {
+            quantities[priceId]--;
+            valueEl.textContent = quantities[priceId];
+            updateBasket();
+          }
+        });
+
+        row.querySelector("[data-qty-inc]").addEventListener("click", () => {
+          quantities[priceId]++;
+          valueEl.textContent = quantities[priceId];
+          updateBasket();
+        });
+      });
+
       checkoutBtn.addEventListener("click", async () => {
+        const items = Object.entries(quantities)
+          .filter(([, q]) => q > 0)
+          .map(([priceId, quantity]) => ({ priceId, quantity }));
+
         checkoutBtn.disabled = true;
         checkoutBtn.textContent = "Redirection…";
         checkoutError.hidden = true;
@@ -251,17 +304,18 @@
           const res = await fetch("/.netlify/functions/create-checkout", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ priceId: selectedPriceId, quantity: 1 }),
+            body: JSON.stringify({ items }),
           });
           if (!res.ok) throw new Error();
           const { url } = await res.json();
           window.location.href = url;
         } catch {
           checkoutError.hidden = false;
-          checkoutBtn.disabled = false;
-          checkoutBtn.textContent = "Acheter — 18,95 €";
+          updateBasket();
         }
       });
+
+      updateBasket();
     </script>
   </body>
 </html>
