@@ -88,7 +88,7 @@
 
             <div class="product-summary__buy">
               <div class="basket-table">
-                <div class="basket-row" data-price-id="price_1Tvx2RHET94B2Jag29He7Qxi">
+                <div class="basket-row" data-price-id="price_1Tvx2RHET94B2Jag29He7Qxi" data-unit-price="18.95">
                   <span class="basket-row__swatch" style="--swatch: #bee4ef;"></span>
                   <span class="basket-row__label">Ciel</span>
                   <div class="qty-control">
@@ -97,7 +97,7 @@
                     <button class="qty-control__btn" type="button" data-qty-inc aria-label="Augmenter">+</button>
                   </div>
                 </div>
-                <div class="basket-row" data-price-id="price_1Tvx2QHET94B2Jag9NAPrEwX">
+                <div class="basket-row" data-price-id="price_1Tvx2QHET94B2Jag9NAPrEwX" data-unit-price="18.95">
                   <span class="basket-row__swatch" style="--swatch: #0c5262;"></span>
                   <span class="basket-row__label">Canard</span>
                   <div class="qty-control">
@@ -106,9 +106,19 @@
                     <button class="qty-control__btn" type="button" data-qty-inc aria-label="Augmenter">+</button>
                   </div>
                 </div>
-                <div class="basket-row" data-price-id="price_1Tvx2RHET94B2JagG6iwLLa8">
+                <div class="basket-row" data-price-id="price_1Tvx2RHET94B2JagG6iwLLa8" data-unit-price="18.95">
                   <span class="basket-row__swatch" style="--swatch: #b85b4e;"></span>
                   <span class="basket-row__label">Brique</span>
+                  <div class="qty-control">
+                    <button class="qty-control__btn" type="button" data-qty-dec aria-label="Diminuer">−</button>
+                    <span class="qty-control__value">0</span>
+                    <button class="qty-control__btn" type="button" data-qty-inc aria-label="Augmenter">+</button>
+                  </div>
+                </div>
+                <!-- Variante de test à 1 centime : masquée sauf sur ?test=1 (voir CLAUDE.md) -->
+                <div class="basket-row" data-price-id="price_1TxSbfHET94B2JagNzZWKHM0" data-unit-price="0.01" data-test-only hidden>
+                  <span class="basket-row__swatch" style="--swatch: #1c1a19;"></span>
+                  <span class="basket-row__label">Black (test)</span>
                   <div class="qty-control">
                     <button class="qty-control__btn" type="button" data-qty-dec aria-label="Diminuer">−</button>
                     <span class="qty-control__value">0</span>
@@ -256,26 +266,43 @@
       renderGallery(0);
     </script>
     <script>
-      const UNIT_PRICE = 18.95;
-      const rows = Array.from(document.querySelectorAll(".basket-row"));
+      // ?test=1 révèle les variantes de test. Les lignes restées masquées ne sont
+      // jamais lues ci-dessous, donc elles n'existent pas pour le panier public.
+      if (new URLSearchParams(window.location.search).has("test")) {
+        document.querySelectorAll(".basket-row[data-test-only]").forEach((row) => {
+          row.hidden = false;
+        });
+      }
+
+      const rows = Array.from(document.querySelectorAll(".basket-row:not([hidden])"));
       const basketCount = document.getElementById("basket-count");
       const basketTotal = document.getElementById("basket-total");
       const checkoutBtn = document.getElementById("checkout-btn");
       const checkoutError = document.getElementById("checkout-error");
 
       const quantities = {};
-      rows.forEach((row) => { quantities[row.dataset.priceId] = 0; });
+      const unitPrices = {};
+      rows.forEach((row) => {
+        quantities[row.dataset.priceId] = 0;
+        unitPrices[row.dataset.priceId] = Number(row.dataset.unitPrice);
+      });
 
       function formatEur(amount) {
         return amount.toFixed(2).replace(".", ",") + " €";
       }
 
       function updateBasket() {
-        const total = Object.values(quantities).reduce((sum, q) => sum + q, 0);
-        basketCount.textContent = total === 1 ? "1 article" : `${total} articles`;
-        basketTotal.textContent = formatEur(total * UNIT_PRICE);
-        checkoutBtn.disabled = total === 0;
-        checkoutBtn.textContent = total > 0 ? `Acheter — ${formatEur(total * UNIT_PRICE)}` : "Acheter";
+        let count = 0;
+        let amount = 0;
+        Object.entries(quantities).forEach(([priceId, qty]) => {
+          count += qty;
+          amount += qty * unitPrices[priceId];
+        });
+
+        basketCount.textContent = count === 1 ? "1 article" : `${count} articles`;
+        basketTotal.textContent = formatEur(amount);
+        checkoutBtn.disabled = count === 0;
+        checkoutBtn.textContent = count > 0 ? `Acheter — ${formatEur(amount)}` : "Acheter";
       }
 
       rows.forEach((row) => {

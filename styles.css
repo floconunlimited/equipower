@@ -711,6 +711,12 @@ main {
   border-bottom: 1px solid var(--line);
 }
 
+/* display: flex ci-dessus l'emporte sur l'attribut hidden : il faut l'annuler
+   explicitement, sinon la variante de test s'afficherait pour tout le monde. */
+.basket-row[hidden] {
+  display: none;
+}
+
 .basket-row__swatch {
   width: 1.35rem;
   height: 1.35rem;
