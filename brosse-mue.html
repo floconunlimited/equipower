@@ -116,7 +116,7 @@
                   </div>
                 </div>
                 <!-- Variante de test à 1 centime : masquée sauf sur ?test=1 (voir CLAUDE.md) -->
-                <div class="basket-row" data-price-id="price_1TxSbfHET94B2JagNzZWKHM0" data-unit-price="0.01" data-test-only hidden>
+                <div class="basket-row" data-price-id="price_1TxSfXHET94B2Jagd4uDue72" data-unit-price="0.50" data-test-only hidden>
                   <span class="basket-row__swatch" style="--swatch: #1c1a19;"></span>
                   <span class="basket-row__label">Black (test)</span>
                   <div class="qty-control">
@@ -339,10 +339,14 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ items }),
           });
-          if (!res.ok) throw new Error();
-          const { url } = await res.json();
-          window.location.href = url;
-        } catch {
+          const data = await res.json().catch(() => ({}));
+          // Le client garde un message rassurant, mais la cause réelle renvoyée par
+          // Stripe part dans la console : sans ça, toute panne de checkout est aveugle.
+          if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+          if (!data.url) throw new Error("Réponse sans URL de checkout");
+          window.location.href = data.url;
+        } catch (err) {
+          console.error("Échec de la création du checkout Stripe :", err.message);
           checkoutError.hidden = false;
           updateBasket();
         }
