@@ -1,0 +1,7 @@
+# Les pages non indexables (merci-commande.html, old_index.html) portent une
+# balise <meta name="robots" content="noindex">. Elles doivent rester crawlables
+# pour que Google puisse lire cette balise : pas de Disallow ici.
+User-agent: *
+Allow: /
+
+Sitemap: https://equipower.fr/sitemap.xml
